@@ -1,10 +1,9 @@
 [gd_scene format=4 uid="uid://4krmq4ep7f7q"]
 
 [ext_resource type="Texture2D" uid="uid://bccijlonxcldw" path="res://icon.svg" id="1_0e48y"]
-[ext_resource type="Texture2D" path="res://86c96557ea8dcaa8239269897f1017f6.jpg" id="2_epypp"]
+[ext_resource type="Script" uid="uid://bghrimc1haec8" path="res://joecool.gd" id="1_epypp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0hol4"]
-texture = ExtResource("2_epypp")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:0/0 = 0
@@ -952,6 +951,7 @@ size = Vector2(152.75, 260)
 [node name="Main" type="Node2D" unique_id=1771816651]
 
 [node name="player" type="CharacterBody2D" parent="." unique_id=436207271]
+script = ExtResource("1_epypp")
 
 [node name="Sprite2D" type="Sprite2D" parent="player" unique_id=501771135]
 position = Vector2(184.99998, -112)
