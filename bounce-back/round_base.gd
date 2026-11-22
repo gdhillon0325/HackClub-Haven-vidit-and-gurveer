@@ -6,7 +6,7 @@ extends Node2D
 # Every round scene runs on its own: open it and press F6 (Run Current Scene).
 
 @export var round_number: int = 1
-@export var total_rounds: int = 3
+@export var total_rounds: int = 5
 @export var echoes_for_round: int = 5
 @export_file("*.tscn") var next_scene: String = ""        # empty = last round
 @export_file("*.tscn") var first_scene: String = "res://round1.tscn"
@@ -14,11 +14,13 @@ extends Node2D
 @export var player_speed: float = 260.0
 @export var jump_velocity: float = -430.0
 @export var gravity_force: float = 980.0
-@export var sonar_ray_count: int = 48
-@export var sonar_speed: float = 640.0
-@export var sonar_bounces: int = 2
+@export var sonar_ray_count: int = 32
+@export var sonar_speed: float = 560.0
+@export var sonar_bounces: int = 1
+@export var sonar_range: float = 260.0       # how far a ping travels (smaller = reveals less)
+@export var exit_edge_x: float = 1148.0     # walk past this x (on the ground) to finish the level
 @export var sonar_curve: float = 1.4        # how much sonar lines bend (radians/sec). 0 = straight
-@export var spike_rest_alpha: float = 0.15  # how visible spikes stay in the dark. 0 = fully hidden
+@export var spike_rest_alpha: float = 0.15  # how visible the gray FLOOR spikes stay. Path spikes are hidden until pinged
 @export var void_death_y: float = 820.0
 @export var floor_spikes: bool = true
 @export var floor_spike_y: float = 632.0
@@ -96,7 +98,11 @@ func _setup_round_objects() -> void:
 			plat.add_to_group("echo_surface")
 			var spr: Sprite2D = plat.get_node_or_null("Sprite2D")
 			if spr and spr.texture == null:
-				spr.texture = _make_rock_texture(Vector2i(120, 24), str(plat.name).hash())
+				var sz := Vector2i(120, 24)
+				var cs = plat.get_node_or_null("CollisionShape2D")
+				if cs and cs.shape is RectangleShape2D:
+					sz = Vector2i(cs.shape.size)
+				spr.texture = _make_rock_texture(sz, str(plat.name).hash())
 			if spr:
 				spr.modulate = Color(0.15, 0.95, 1.0, 0.0)
 
@@ -109,20 +115,17 @@ func _setup_round_objects() -> void:
 		_build_floor_spikes(hazards)
 	for haz in hazards.get_children():
 		haz.add_to_group("hazard")
+		var is_floor: bool = str(haz.name).begins_with("FloorSpike")
+		if is_floor:
+			haz.add_to_group("floor_spike")
 		var spr: Sprite2D = haz.get_node_or_null("Sprite2D")
 		if spr and spr.texture == null:
-			spr.texture = _make_spike_texture()
+			spr.texture = _make_spike_texture() if is_floor else _make_black_spike_texture()
 		if spr:
-			spr.modulate = Color(0.8, 0.82, 0.86, spike_rest_alpha)  # gray spikes
-
-	var door: Area2D = get_node_or_null("ExitDoor")
-	if door:
-		door.body_entered.connect(_on_exit_door_entered)
-		var door_spr: Sprite2D = door.get_node_or_null("Sprite2D")
-		if door_spr:
-			if door_spr.texture == null:
-				door_spr.texture = _make_door_texture()
-			door_spr.modulate = Color(0.2, 1.0, 0.45, 1.0)
+			if is_floor:
+				spr.modulate = Color(0.8, 0.82, 0.86, spike_rest_alpha)  # gray floor spikes
+			else:
+				spr.modulate = Color(1, 1, 1, 0.0)  # black path spikes: hidden until pinged
 
 	_respawn_player()
 
@@ -178,6 +181,12 @@ func _physics_process(delta: float) -> void:
 	player.velocity = vel
 	player.move_and_slide()
 
+	if player.global_position.x < 14.0:
+		player.global_position.x = 14.0
+	if player.global_position.x > exit_edge_x and player.is_on_floor():
+		_finish_round()
+		return
+
 	if player.global_position.y > void_death_y:
 		_die_and_create_corpse_platform()
 	else:
@@ -207,6 +216,7 @@ func _emit_echo() -> void:
 			"bounces": sonar_bounces,
 			"life": 1.3,
 			"curve": sonar_curve * randf_range(0.8, 1.2),
+			"dist": 0.0,
 			"points": [player.global_position],
 		})
 
@@ -222,6 +232,9 @@ func _update_sonar_rays(delta: float) -> void:
 			continue
 
 		ray["dir"] = (ray["dir"] as Vector2).rotated(ray["curve"] * delta)  # bend the path
+		ray["dist"] += sonar_speed * delta
+		if ray["dist"] >= sonar_range:
+			ray["life"] = min(ray["life"], 0.12)
 		var start_pos: Vector2 = ray["pos"]
 		var end_pos: Vector2 = start_pos + ray["dir"] * sonar_speed * delta
 
@@ -257,9 +270,9 @@ func _update_fading_visuals(delta: float) -> void:
 	for spr in revealed_sprites.keys():
 		if is_instance_valid(spr):
 			var rest: float = 0.0
-			if spr.get_parent().is_in_group("hazard"):
+			if spr.get_parent().is_in_group("floor_spike"):
 				rest = spike_rest_alpha
-			var a: float = move_toward(revealed_sprites[spr], rest, delta * 0.48)
+			var a: float = move_toward(revealed_sprites[spr], rest, delta * 1.0)
 			spr.modulate.a = a
 			if a <= rest:
 				revealed_sprites.erase(spr)
@@ -269,8 +282,8 @@ func _update_fading_visuals(delta: float) -> void:
 			revealed_sprites.erase(spr)
 
 	for i in range(echo_rings.size() - 1, -1, -1):
-		echo_rings[i]["radius"] += 480.0 * delta
-		echo_rings[i]["alpha"] -= 2.1 * delta
+		echo_rings[i]["radius"] += sonar_speed * delta
+		echo_rings[i]["alpha"] -= (sonar_speed / sonar_range) * delta
 		if echo_rings[i]["alpha"] <= 0.0:
 			echo_rings.remove_at(i)
 
@@ -305,18 +318,51 @@ func _die_and_create_corpse_platform() -> void:
 	_respawn_player()
 
 
-func _on_exit_door_entered(body: Node2D) -> void:
-	if body != player or game_won or changing_scene:
+func _finish_round() -> void:
+	if game_won or changing_scene:
 		return
 	if next_scene != "":
 		changing_scene = true
 		get_tree().change_scene_to_file.call_deferred(next_scene)
 	else:
 		game_won = true
-		hud_label.text = "YOU ESCAPED ALL %d ROUNDS!  |  Press [R] to play again" % total_rounds
+		_show_win_screen()
+
+
+func _show_win_screen() -> void:
+	var canvas := CanvasLayer.new()
+	canvas.layer = 10
+	add_child(canvas)
+	var vp: Vector2 = get_viewport_rect().size
+
+	var bg := ColorRect.new()
+	bg.color = Color(0, 0, 0, 0.9)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	canvas.add_child(bg)
+
+	var big := Label.new()
+	big.text = "YOU\nESCAPED\nTHE CAVE!"
+	big.set_anchors_preset(Control.PRESET_FULL_RECT)
+	big.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	big.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	big.add_theme_font_size_override("font_size", int(minf(vp.y / 3.9, vp.x / 7.4)))
+	big.add_theme_color_override("font_color", Color(0.15, 0.95, 1.0))
+	canvas.add_child(big)
+
+	var small := Label.new()
+	small.text = "Press [R] to play again"
+	small.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	small.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	small.add_theme_font_size_override("font_size", int(vp.y / 16.0))
+	small.add_theme_color_override("font_color", Color(1, 1, 1))
+	canvas.add_child(small)
 
 
 func _on_overlay_draw() -> void:
+	# green glow on the right edge of the screen: walk off this side to finish the level
+	var vp: Vector2 = get_viewport_rect().size
+	var pulse: float = 0.3 + 0.15 * sin(Time.get_ticks_msec() / 250.0)
+	overlay.draw_rect(Rect2(vp.x - 10.0, 0.0, 10.0, vp.y), Color(0.2, 1.0, 0.45, pulse))
 	for ring in echo_rings:
 		overlay.draw_arc(ring["pos"], ring["radius"], 0.0, TAU, 48, Color(0.15, 0.95, 1.0, ring["alpha"]), 2.5, true)
 	for ray in sonar_rays:
@@ -337,7 +383,7 @@ func _create_hud() -> void:
 
 func _update_hud() -> void:
 	if hud_label:
-		hud_label.text = "ROUND %d / %d  |  ECHOES LEFT: %d  |  [E / Right-Click] Sonar  |  [R] Restart" % [round_number, total_rounds, echoes_left]
+		hud_label.text = "ROUND %d / %d  |  ECHOES LEFT: %d  |  [E / Right-Click] Sonar  |  [R] Restart\nReach the green edge on the RIGHT to escape" % [round_number, total_rounds, echoes_left]
 
 
 func _ensure_placeholder_texture(spr: Sprite2D, size: Vector2i, color: Color) -> void:
@@ -455,6 +501,21 @@ func _make_spike_texture() -> ImageTexture:
 			for x in range(int(cx - half), int(cx + half) + 1):
 				if x >= 0 and x < 32:
 					var v: float = 1.0 if absf(x - cx) > half - 1.5 else 0.85
+					img.set_pixel(x, y, Color(v, v, v))
+	return ImageTexture.create_from_image(img)
+
+
+func _make_black_spike_texture() -> ImageTexture:
+	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0, 0, 0, 0))
+	for s in range(2):
+		var cx: int = 8 + s * 16
+		for y in range(32):
+			var half: float = (y / 31.0) * 8.0
+			for x in range(int(cx - half), int(cx + half) + 1):
+				if x >= 0 and x < 32:
+					var edge: bool = absf(x - cx) > half - 1.5 or y < 2
+					var v: float = 0.85 if edge else 0.02
 					img.set_pixel(x, y, Color(v, v, v))
 	return ImageTexture.create_from_image(img)
 
