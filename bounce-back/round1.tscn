@@ -1,6 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://djc6rhy8tq6m6"]
 
-[ext_resource type="Script" path="res://round1.gd" id="1"]
+[ext_resource type="Script" uid="uid://iy4tggnhklte" path="res://round1.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="s_door"]
+size = Vector2(36, 56)
 
 [sub_resource type="RectangleShape2D" id="s_plat"]
 size = Vector2(120, 24)
@@ -8,95 +11,84 @@ size = Vector2(120, 24)
 [sub_resource type="RectangleShape2D" id="s_spike"]
 size = Vector2(32, 32)
 
-[sub_resource type="RectangleShape2D" id="s_door"]
-size = Vector2(36, 56)
-
-[node name="Round1" type="Node2D"]
+[node name="Round1" type="Node2D" unique_id=45230925]
 script = ExtResource("1")
 
-[node name="SpawnPoint" type="Marker2D" parent="."]
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=571128876]
 position = Vector2(100, 480)
 
-[node name="ExitDoor" type="Area2D" parent="."]
+[node name="ExitDoor" type="Area2D" parent="." unique_id=1029670140]
 position = Vector2(1040, 250)
 collision_layer = 4
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="ExitDoor"]
+[node name="Sprite2D" type="Sprite2D" parent="ExitDoor" unique_id=1319654638]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitDoor"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitDoor" unique_id=1573062620]
 shape = SubResource("s_door")
 
-[node name="Platforms" type="Node2D" parent="."]
+[node name="Platforms" type="Node2D" parent="." unique_id=1262498501]
 
-[node name="Platform1" type="StaticBody2D" parent="Platforms"]
+[node name="Platform1" type="StaticBody2D" parent="Platforms" unique_id=21059584]
 position = Vector2(100, 540)
 collision_layer = 2
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform1"]
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform1" unique_id=1709726249]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform1" unique_id=1044593842]
 shape = SubResource("s_plat")
 
-[node name="Platform2" type="StaticBody2D" parent="Platforms"]
+[node name="Platform2" type="StaticBody2D" parent="Platforms" unique_id=969690870]
 position = Vector2(280, 470)
 collision_layer = 2
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform2"]
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform2" unique_id=430768695]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform2" unique_id=569434931]
 shape = SubResource("s_plat")
 
-[node name="Platform3" type="StaticBody2D" parent="Platforms"]
+[node name="Platform3" type="StaticBody2D" parent="Platforms" unique_id=1494028048]
 position = Vector2(460, 400)
 collision_layer = 2
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform3"]
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform3" unique_id=1684542295]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform3"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform3" unique_id=1110932290]
 shape = SubResource("s_plat")
 
-[node name="Platform4" type="StaticBody2D" parent="Platforms"]
+[node name="Platform4" type="StaticBody2D" parent="Platforms" unique_id=909797161]
 position = Vector2(640, 340)
 collision_layer = 2
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform4"]
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform4" unique_id=670482986]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform4"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform4" unique_id=435934126]
 shape = SubResource("s_plat")
 
-[node name="Platform5" type="StaticBody2D" parent="Platforms"]
+[node name="Platform5" type="StaticBody2D" parent="Platforms" unique_id=318022570]
 position = Vector2(840, 300)
 collision_layer = 2
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform5"]
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform5" unique_id=1486653297]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform5"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform5" unique_id=302257657]
 shape = SubResource("s_plat")
 
-[node name="Platform6" type="StaticBody2D" parent="Platforms"]
+[node name="Platform6" type="StaticBody2D" parent="Platforms" unique_id=1292728251]
 position = Vector2(1040, 300)
 collision_layer = 2
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform6"]
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform6" unique_id=1710026788]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform6"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform6" unique_id=1958794192]
 shape = SubResource("s_plat")
 
-[node name="Hazards" type="Node2D" parent="."]
+[node name="Hazards" type="Node2D" parent="." unique_id=1440494832]
 
-[node name="Spike1" type="StaticBody2D" parent="Hazards"]
+[node name="Spike1" type="StaticBody2D" parent="Hazards" unique_id=1468242390]
 position = Vector2(460, 372)
 collision_layer = 2
-collision_mask = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="Hazards/Spike1"]
+[node name="Sprite2D" type="Sprite2D" parent="Hazards/Spike1" unique_id=998919116]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hazards/Spike1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hazards/Spike1" unique_id=567318070]
 shape = SubResource("s_spike")
