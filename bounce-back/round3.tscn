@@ -1,0 +1,139 @@
+[gd_scene format=3 uid="uid://b30th7wo6p7oa"]
+
+[ext_resource type="Script" uid="uid://d4kv5w3e1qu01" path="res://round3.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="s_door"]
+size = Vector2(36, 56)
+
+[sub_resource type="RectangleShape2D" id="s_plat"]
+size = Vector2(120, 24)
+
+[sub_resource type="RectangleShape2D" id="s_spike"]
+size = Vector2(32, 32)
+
+[node name="Round3" type="Node2D" unique_id=1946250600]
+script = ExtResource("1")
+
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=1815606716]
+position = Vector2(80, 560)
+
+[node name="ExitDoor" type="Area2D" parent="." unique_id=657448841]
+position = Vector2(1060, 100)
+collision_layer = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="ExitDoor" unique_id=133318758]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitDoor" unique_id=1670329086]
+shape = SubResource("s_door")
+
+[node name="Platforms" type="Node2D" parent="." unique_id=860080648]
+
+[node name="Platform1" type="StaticBody2D" parent="Platforms" unique_id=241711121]
+position = Vector2(80, 600)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform1" unique_id=324931803]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform1" unique_id=1134810915]
+shape = SubResource("s_plat")
+
+[node name="Platform2" type="StaticBody2D" parent="Platforms" unique_id=2132591965]
+position = Vector2(280, 540)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform2" unique_id=1649158798]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform2" unique_id=534264807]
+shape = SubResource("s_plat")
+
+[node name="Platform3" type="StaticBody2D" parent="Platforms" unique_id=2021464250]
+position = Vector2(480, 480)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform3" unique_id=422303958]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform3" unique_id=703678416]
+shape = SubResource("s_plat")
+
+[node name="Platform4" type="StaticBody2D" parent="Platforms" unique_id=404475562]
+position = Vector2(300, 380)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform4" unique_id=635558515]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform4" unique_id=1678437630]
+shape = SubResource("s_plat")
+
+[node name="Platform5" type="StaticBody2D" parent="Platforms" unique_id=334862553]
+position = Vector2(520, 320)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform5" unique_id=230367037]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform5" unique_id=2055164645]
+shape = SubResource("s_plat")
+
+[node name="Platform6" type="StaticBody2D" parent="Platforms" unique_id=2096020113]
+position = Vector2(760, 380)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform6" unique_id=1619355608]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform6" unique_id=601813280]
+shape = SubResource("s_plat")
+
+[node name="Platform7" type="StaticBody2D" parent="Platforms" unique_id=2106240659]
+position = Vector2(800, 240)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform7" unique_id=1462094992]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform7" unique_id=434977311]
+shape = SubResource("s_plat")
+
+[node name="Platform8" type="StaticBody2D" parent="Platforms" unique_id=1221756750]
+position = Vector2(1040, 160)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Platforms/Platform8" unique_id=775510138]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platforms/Platform8" unique_id=16271776]
+shape = SubResource("s_plat")
+
+[node name="Hazards" type="Node2D" parent="." unique_id=1858445330]
+
+[node name="Spike1" type="StaticBody2D" parent="Hazards" unique_id=561058013]
+position = Vector2(480, 452)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Hazards/Spike1" unique_id=328635045]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hazards/Spike1" unique_id=553229383]
+shape = SubResource("s_spike")
+
+[node name="Spike2" type="StaticBody2D" parent="Hazards" unique_id=682234280]
+position = Vector2(520, 292)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Hazards/Spike2" unique_id=146447910]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hazards/Spike2" unique_id=1719804946]
+shape = SubResource("s_spike")
+
+[node name="Spike3" type="StaticBody2D" parent="Hazards" unique_id=260935538]
+position = Vector2(760, 352)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Hazards/Spike3" unique_id=844677359]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hazards/Spike3" unique_id=656055044]
+shape = SubResource("s_spike")
+
+[node name="Spike4" type="StaticBody2D" parent="Hazards" unique_id=557366782]
+position = Vector2(800, 212)
+collision_layer = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Hazards/Spike4" unique_id=1435716052]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hazards/Spike4" unique_id=146913706]
+shape = SubResource("s_spike")
